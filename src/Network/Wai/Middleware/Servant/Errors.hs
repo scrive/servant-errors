@@ -62,7 +62,8 @@ import Data.Aeson (Value (..), encode)
 import qualified Data.ByteString as B
 import Data.ByteString.Builder (toLazyByteString)
 import qualified Data.ByteString.Lazy as LB
-import qualified Data.HashMap.Strict as H
+import qualified Data.Aeson.KeyMap as KM
+import qualified Data.Aeson.Key as K
 import Data.IORef (modifyIORef', newIORef, readIORef)
 import Data.Kind (Type)
 import Data.List (find)
@@ -187,9 +188,9 @@ responseBody res =
 encodeAsJsonError :: ErrorLabels -> StatusCode -> ErrorMsg -> LB.ByteString
 encodeAsJsonError ErrorLabels {..} code content =
   encode $ Object
-         $ H.fromList
-           [ (errName, String $ unErrorMsg content)
-           , (errStatusName, Number $ toScientific code )
+         $ KM.fromList
+           [ (K.fromText errName, String $ unErrorMsg content)
+           , (K.fromText errStatusName, Number $ toScientific code )
            ]
    where
      toScientific :: StatusCode -> Scientific
